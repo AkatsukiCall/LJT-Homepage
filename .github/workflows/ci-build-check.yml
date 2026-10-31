@@ -1,0 +1,48 @@
+name: Jekyll build check (temporary)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "/LJT-Homepage"
+        env:
+          JEKYLL_ENV: production
+      - name: Verify rendered home page
+        run: |
+          set -e
+          test -f _site/index.html
+          for term in "Junteng Liu" "HKUST NLP Group" "Professor Junxian He" "Shanghai Jiao Tong University" \
+            "Ph.D. in Computer Science" "B.Eng." "Research Interests and Skills" \
+            "LLM Reasoning and Reinforcement Learning" "Hallucination in Vision-Language Models (VLM)" \
+            "LLM Truthfulness and Interpretability" "MINIMAX" "Tencent WXG" "Shanghai AI Lab" \
+            "Zifei Shan" "Prof. Yu Cheng" "Zhiyuan Honor Scholarship" \
+            "SynLogic" "Perception Bottleneck" "Universal Truthfulness Hyperplane" \
+            "In-Context Sharpness" "C-Eval" "Composing Parameter-Efficient Modules" \
+            "jliugi@connect.ust.hk" "Vicent0205" "tbK9jl4AAAAJ" "junteng88716710"; do
+            grep -q "$term" _site/index.html || { echo "MISSING ON HOME: $term"; exit 1; }
+          done
+      - name: Verify publications subpage
+        run: |
+          set -e
+          test -f _site/publications/index.html
+          for term in "SynLogic" "Perception Bottleneck" "Universal Truthfulness Hyperplane" \
+            "In-Context Sharpness" "C-Eval" "Composing Parameter-Efficient Modules" \
+            "Conference Papers" "Preprints"; do
+            grep -q "$term" _site/publications/index.html || { echo "MISSING ON PUBS: $term"; exit 1; }
+          done
+          test "$(ls _site/publication | wc -l)" -ge 6
