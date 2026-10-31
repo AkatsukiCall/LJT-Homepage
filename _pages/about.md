@@ -17,7 +17,7 @@ I am a first-year PhD candidate at the **HKUST NLP Group**, Hong Kong University
 - **B.Eng.**, Shanghai Jiao Tong University (SJTU), 2020–2024
   - Graduated in June 2024
 
-## Research Interests
+## Research Interests and Skills
 
 - Natural Language Processing
 - Machine Learning
